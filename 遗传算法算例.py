@@ -3,6 +3,7 @@
 import random
 import math
 import matplotlib.pyplot as plt
+import copy
 class GA(object):
 #初始化种群 生成chromosome_length大小的population_size个个体的种群
  
@@ -136,16 +137,16 @@ class GA(object):
     # 存活的种群排序
         fitin=0
         newin=0
-        new_population=new_pop=population
+        new_population=copy.deepcopy(population)
  
     #轮盘赌方式
         while newin<pop_len:
               if(ms[newin]<new_fitness[fitin]):
-                 new_pop[newin]=population[fitin]
+                 new_population[newin]=population[fitin]
                  newin+=1
               else:
                  fitin+=1
-        population=new_pop
+        population=new_population
  
 #4.交叉操作
     def crossover(self,population):
@@ -223,7 +224,7 @@ class GA(object):
         X = []
         Y = []
  
-        for i in range(5000):
+        for i in range(500):
             X.append(i)
             Y.append(results[i][0])
  
@@ -238,7 +239,7 @@ class GA(object):
  
         population = self.species_origin()
  
-        for i in range(5000):
+        for i in range(500):
             function_value = self.function(population)
             # print('fit funtion_value:',function_value)
             fitness_value = self.fitness(function_value)
@@ -258,7 +259,7 @@ if __name__ == '__main__':
  
  
    population_size=400
-   max_value=10
+   max_value=3
    chromosome_length=20
    pc=0.6
    pm=0.01
