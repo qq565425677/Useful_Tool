@@ -7,6 +7,7 @@ y = np.array([70 ,122 ,144 ,152, 174, 196, 202])
 
 z1 = np.polyfit(x,y,4)
 p1 = np.poly1d(z1)
+print(p1)
 xn=np.linspace(1990,1996,100,True)
 yvalue = p1(xn)
 
