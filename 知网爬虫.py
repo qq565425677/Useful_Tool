@@ -1,7 +1,8 @@
 from selenium import webdriver,common
 import re,math,time,os
+import random as r
 
-downloadposition='C:\\Users\\56542\\Desktop\\citespacetest\\origin_data\\'
+downloadposition='/home/far/PythonPractice/知网下载'
 
 def txtmerge(path):
     os.chdir(path)
@@ -16,14 +17,14 @@ options=webdriver.ChromeOptions()
 prefs={'profile.default_content_settings.popups': 0, 'download.default_directory':downloadposition}
 options.add_experimental_option('prefs', prefs)
 
-browser=webdriver.Chrome(chrome_options=options)
+browser=webdriver.Chrome(chrome_options=options,executable_path='/home/far/PythonPractice/chromedriver')
 browser.get('http://www.cnki.net/')
 keyword=input('请输入搜索关键字：')
 keyword+='\n'
 #搜索关键字
 browser.find_element_by_id('txt_SearchText').send_keys(keyword)
 #转换到搜索结果框架
-time.sleep(3)
+time.sleep(3+r.random())
 browser.switch_to_frame('iframeResult')
 #获取文献总数
 strnum_of_literature=browser.find_element_by_xpath('//*[@id="J_ORDER"]/tbody/tr[2]/td/table/tbody/tr/td[2]/div/div')
@@ -37,7 +38,7 @@ print("找到文献",num_of_literature,'篇')
 #设置按相关性排序
 browser.find_element_by_xpath('//*[@id="J_ORDER"]/tbody/tr[1]/td/table/tbody/tr/td[1]/span[2]/a').click()
 #设置每页显示50篇文献
-time.sleep(2)
+time.sleep(2+r.random())
 browser.find_element_by_xpath('//*[@id="id_grid_display_num"]/a[3]').click()
 #获取总页数
 totalpages=math.ceil(num_of_literature/50)
@@ -48,11 +49,15 @@ input(1)
 #browser.switch_to_frame('iframeResult')
 
 #开始下载
-for i in range(43,113):
+for i in range(0,10000):
     #全选当页文献
-    while browser.find_element_by_id('selectCount').text=='0':
-        time.sleep(2)
-        browser.execute_script('arguments[0].click();',browser.find_element_by_id('selectCheckbox'))
+    try:
+        while browser.find_element_by_id('selectCount').text=='0':
+            time.sleep(2+r.random()-0.5)
+            browser.execute_script('arguments[0].click();',browser.find_element_by_id('selectCheckbox'))
+    except common.exceptions.NoSuchElementException as ne:
+        input('请调整页面，按回车继续')
+        continue
     #打开新网页
     time.sleep(1)
     browser.find_element_by_xpath('//*[@id="J_ORDER"]/tbody/tr[2]/td/table/tbody/tr/td[1]/div/a[2]').click()
@@ -63,10 +68,10 @@ for i in range(43,113):
     #切换窗口
     browser.switch_to_window(window_handles[1])
     #选择Refworks
-    time.sleep(2)
+    time.sleep(2+r.random()-0.5)
     browser.find_element_by_xpath('//*[@id="SaveTypeList"]/li[6]/span[1]/a').click()
     #下载到桌面
-    time.sleep(2)
+    time.sleep(2+r.random()-0.5)
     browser.find_element_by_id('exportTxt').click()
     #关闭当前页
     browser.close()
@@ -74,10 +79,10 @@ for i in range(43,113):
     browser.switch_to_window(current_window_handle)
     browser.switch_to_frame('iframeResult')
     while browser.find_element_by_id('selectCount').text!='0':
-        time.sleep(2)
+        time.sleep(2+r.random()-0.5)
         browser.execute_script('arguments[0].click();',browser.find_element_by_class_name('zero'))
         #browser.execute_script('arguments[0].click();',browser.find_element_by_id('selectCheckbox'))
-    time.sleep(2)
+    time.sleep(2+r.random()-0.5)
     for j in range(1,13):
         try:
             controlpage=browser.find_element_by_xpath('//*[@id="ctl00"]/table/tbody/tr[3]/td/table/tbody/tr/td/div/a[%d]'%(j))
